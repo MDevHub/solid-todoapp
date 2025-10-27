@@ -40,7 +40,7 @@ export async function apiFetch(path: string, init: RequestInit = {}) {
     console.debug("apiFetch -> request", { url, init: { ...init, headers: Object.fromEntries(headers.entries()) } });
   }
 
-  const res = await fetch(url, { ...init, headers, credentials: (init.credentials as RequestCredentials) || "include" });
+  const res = await fetch(url, { ...init, headers });
   const body = await parseJsonIfPossible(res);
 
   if (DEBUG) {
