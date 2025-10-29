@@ -37,17 +37,39 @@ export async function apiFetch(path: string, init: RequestInit = {}) {
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
   if (DEBUG) {
-    console.debug("apiFetch -> request", { url, init: { ...init, headers: Object.fromEntries(headers.entries()) } });
+    console.debug("apiFetch -> request", {
+      API_BASE,
+      path,
+      url,
+      init: { ...init, headers: Object.fromEntries(headers.entries()) },
+    });
   }
 
-  const res = await fetch(url, { ...init, headers });
+  // Defensive guard: if the resolved URL looks like a dev-server module path
+  // (e.g. contains '/_build/'), abort early so we don't attempt to fetch
+  // client source files by mistake.
+  if (url.includes("/_build/")) {
+    throw new Error(`Refusing to fetch dev build module URL: ${url} — check the path passed to apiFetch`);
+  }
+
+  let res: Response;
+  try {
+    res = await fetch(url, { ...init, headers });
+  } catch (err: any) {
+    const e = new Error(`Network request failed for ${url}: ${err?.message || err}`);
+    (e as any).cause = err;
+    // Provide additional debug info in console for easier diagnosis
+    if (DEBUG) console.error("apiFetch -> network error", { API_BASE, path, url, err });
+    throw e;
+  }
+
   const body = await parseJsonIfPossible(res);
 
   if (DEBUG) {
     // log a compact response summary
     const h: Record<string,string> = {};
     res.headers.forEach((v,k)=> (h[k]=v));
-    console.debug("apiFetch <- response", { url, status: res.status, headers: h, body });
+    console.debug("apiFetch <- response", { API_BASE, path, url, status: res.status, headers: h, body });
   }
 
   if (!res.ok) {

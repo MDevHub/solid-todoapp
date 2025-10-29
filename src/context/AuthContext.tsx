@@ -1,10 +1,11 @@
 import { createContext, useContext, createSignal, onMount, JSX } from "solid-js";
 import { apiFetch, getStoredToken, setStoredToken, DEBUG } from "~/lib/api";
 
+
 type AuthContextType = {
-  user: string | null;
-  token: string | null;
-  signup: (username: string, password: string) => Promise<void>;
+  user: () => string | null;
+  token: () => string | null;
+  signup: (username: string, password: string) => Promise<any>;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
 };
@@ -16,13 +17,21 @@ export function AuthProvider(props: { children: JSX.Element }) {
   const [user, setUser] = createSignal<string | null>(null);
   const [token, setToken] = createSignal<string | null>(null);
 
-  // Load from localStorage on app start
   onMount(() => {
     const savedUser = localStorage.getItem("user");
     const savedToken = getStoredToken();
-    if (savedUser) setUser(savedUser);
-    if (savedToken) setToken(savedToken);
+
+    // Only restore if both exist and are non-empty strings
+    if (savedUser && savedToken) {
+      setUser(savedUser);
+      setToken(savedToken);
+    } else {
+      // Clear any leftover session (prevents unwanted auto-login)
+      localStorage.removeItem("user");
+      setStoredToken(null);
+    }
   });
+
 
   // Signup
   const signup = async (username: string, password: string) => {
@@ -74,7 +83,7 @@ export function AuthProvider(props: { children: JSX.Element }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user: user(), token: token(), signup, login, logout }}>
+    <AuthContext.Provider value={{ user, token, signup, login, logout }}>
       {props.children}
     </AuthContext.Provider>
   );

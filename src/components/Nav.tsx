@@ -2,6 +2,7 @@ import { A } from "@solidjs/router";
 import logo from "~/assets/logo.png";
 
 export default function Nav() {
+	
 	return (
 		<nav class="bg-(--bgd) text-(--light-text)">
 			<div class="w-full flex items-center justify-between max-w-[1400px] mx-auto px-4 md:px-3 py-4">
