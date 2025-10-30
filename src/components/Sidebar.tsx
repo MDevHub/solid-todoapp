@@ -4,10 +4,12 @@ import { useAuth } from "~/context/AuthContext";
 import SidebarContent from "~/components/SidebarContent";
 
 type Props = {
-   open: boolean;
-   setOpen: Setter<boolean>;
-   setShowAddModal?: Setter<boolean>;
+  open: boolean;
+  setOpen: (v: boolean) => void;
+  setShowAddModal: (v: boolean) => void;
+  setCurrentPage: (page: string) => void; // 
 };
+
 
 export default function Sidebar(props: Props) {
   const { user } = useAuth();
@@ -62,7 +64,11 @@ export default function Sidebar(props: Props) {
 
             {/* Example content */}
             <div class="flex-1 flex flex-col text-sm opacity-80">
-               <SidebarContent setShowAddModal={props.setShowAddModal} />
+               <SidebarContent
+                    setShowAddModal={props.setShowAddModal}
+                  setCurrentPage={props.setCurrentPage}
+                  setOpen={props.setOpen}
+               />
             </div>
         </div>
       </aside>

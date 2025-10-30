@@ -1,8 +1,9 @@
-
 const DashboardFooter = () => {
   return (
-    <div>DashboardFooter</div>
-  )
-}
+    <footer class="text-center text-sm text-gray-900">
+      Built by Abdulrahman
+    </footer>
+  );
+};
 
-export default DashboardFooter
+export default DashboardFooter;
