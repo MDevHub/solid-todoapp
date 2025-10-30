@@ -23,12 +23,12 @@ export default function DashboardMain(props: Props) {
       if (!username) return [];
       try {
         const data = await getTodos(username);
-        const storedCompleted = JSON.parse(localStorage.getItem("completedTodos") || "[]");
-        // filter out completed ones from active todos
-        const active = Array.isArray(data)
-          ? data.filter((t) => !storedCompleted.some((c: any) => c.id === t.id))
-          : [];
-        return active;
+        const storedCompleted = JSON.parse(localStorage.getItem(`completedTodos_${username}`) || "[]");
+			const active = Array.isArray(data)
+			? data.filter((t: any) => !storedCompleted.some((c: any) => c.id === t.id))
+			: [];
+			return active;
+
       } catch (err: any) {
         if (err?.status === 401) {
           try {
@@ -92,42 +92,29 @@ export default function DashboardMain(props: Props) {
 			// fallback: refetch if API call failed
 			refetch();
 		}
-	};
-
-
-  // Popup signal
-  const [completedMessage, setCompletedMessage] = createSignal<string | null>(null);
-
-  // Handle task completion
-	const handleComplete = (todo: any) => {
-		// Remove from current todos (optimistic)
-		mutate((prev: any[] | undefined) =>
-			prev ? prev.filter((t) => t.id !== todo.id) : []
-		);
-
-		// Prepare completed item
-		const completedItem = {
-			...todo,
-			completed: true,
-			completedAt: new Date().toISOString(),
 		};
+		// Popup signal
+		const [completedMessage, setCompletedMessage] = createSignal<string | null>(null);
 
-		// Save to localStorage (per user)
-			const username = localStorage.getItem("user");
-				if (username) {
-				const prevCompleted = JSON.parse(localStorage.getItem(`completedTodos_${username}`) || "[]");
-				localStorage.setItem(
-					`completedTodos_${username}`,
-					JSON.stringify([completedItem, ...prevCompleted])
-				);
-			}
+		// Handle task completion
+			const handleComplete = (todo: any) => {
+		const username = localStorage.getItem("user");
+		if (!username) return;
 
+		// 1. Remove from current todos (optimistic)
+		mutate(prev => (prev ? prev.filter(t => t.id !== todo.id) : []));
 
-		// Show popup
+		// 2. Save completed item per user
+		const completedItem = { ...todo, completed: true, completedAt: new Date().toISOString() };
+		const prevCompleted = JSON.parse(localStorage.getItem(`completedTodos_${username}`) || "[]");
+		const updatedCompleted = [completedItem, ...prevCompleted];
+		localStorage.setItem(`completedTodos_${username}`, JSON.stringify(updatedCompleted));
+		setCompletedTodos(updatedCompleted);
+
+		// 3. Show popup
 		setCompletedMessage(`Todo completed: ${todo.task}`);
 		setTimeout(() => setCompletedMessage(null), 2500);
-	};
-
+		};
 
 	// ✅ Mark as completed handler (local-only)
 	const handleToggleCompleted = (todo: any) => {
