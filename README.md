@@ -1,32 +1,43 @@
-# SolidStart
+# SolidStart Todo App
 
-Everything you need to build a Solid project, powered by [`solid-start`](https://start.solidjs.com);
+A modern, responsive Todo application built with SolidStart.
+Keep track of tasks, mark them as completed, and view activity history by user.
 
-## Creating a project
+## Features
 
 ```bash
-# create a new project in the current directory
-npm init solid@latest
-
-# create a new project in my-app
-npm init solid@latest my-app
+# Add, edit, and delete tasks
+# Mark tasks as completed
+# View completed tasks grouped by date
+# User authentication with username and token
+# Responsive layout with sidebar navigation
+# Local storage persistence per user
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Getting Started
+Clone the repository and install dependencies:
 
 ```bash
-npm run dev
+git clone <your-repo-url>
+cd <project-folder>
+npm install
+```
 
-# or start the server and open the app in a new browser tab
+## Development
+Start the development server:
+```bash
+npm run dev
+# Or start and open in a browser
 npm run dev -- --open
 ```
 
-## Building
+## Project Structure
+```bash
+# src/components – React-like SolidJS components (Dashboard, Sidebar, Todo list, Modals)
+# src/context – Auth context for managing user sessions
+# src/routes – Pages like Dashboard, Completed Tasks, etc.
+# src/lib – API calls and helper functions
+```
 
-Solid apps are built with _presets_, which optimise your project for deployment to different environments.
-
-By default, `npm run build` will generate a Node app that you can run with `npm start`. To use a different preset, add it to the `devDependencies` in `package.json` and specify in your `app.config.js`.
-
-## This project was created with the [Solid CLI](https://github.com/solidjs-community/solid-cli)
+## Author 
+Built by Abdulrahman
