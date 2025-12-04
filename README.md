@@ -3,6 +3,8 @@
 A modern, responsive Todo application built with SolidStart.
 Keep track of tasks, mark them as completed, and view activity history by user.
 
+NOTE : ENABLE CORS EXTENSION ON YOUR BROWSER OR (ANY OTHER EXTENSION) TO IGNORE ERRORS
+
 ## Features
 
 ```bash
